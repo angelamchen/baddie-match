@@ -1,7 +1,7 @@
 import logo from './logo.svg';
 import './App.css';
-import React, { useEffect, useState } from 'react';
-import axios from 'axios'
+import MainRouter from './Routers/MainRouter';
+import { BrowserRouter } from 'react-router-dom';
 
 function App() {
   const [getMessage, setGetMessage] = useState({})
@@ -17,14 +17,27 @@ function App() {
   }, [])
 
   return (
-    <div className="App">
-      <header className="App-header">
-        <div>{getMessage.status === 200 ? 
-          <h3>{getMessage.data}</h3>
-          :
-          <h3>LOADING</h3>}</div>
-      </header>
-    </div>
+    <>
+      <MainRouter />
+
+      {/* <div className="App">
+        <header className="App-header">
+          <img src={logo} className="App-logo" alt="logo" />
+          <p>
+            Edit <code>src/App.js</code> and save to reload.
+          </p>
+          <a
+            className="App-link"
+            href="https://reactjs.org"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Learn React
+          </a>
+        </header>
+      </div> */}
+    </>
+
   );
 }
 
