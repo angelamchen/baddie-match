@@ -4,18 +4,6 @@ import MainRouter from './Routers/MainRouter';
 import { BrowserRouter } from 'react-router-dom';
 
 function App() {
-  const [getMessage, setGetMessage] = useState({})
-
-  useEffect(()=>{
-    axios.get('https://baddie-match.herokuapp.com/hello').then(response => {
-      console.log("SUCCESS", response)
-      setGetMessage(response)
-    }).catch(error => {
-      console.log(error)
-    })
-
-  }, [])
-
   return (
     <>
       <MainRouter />
