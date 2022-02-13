@@ -14,37 +14,10 @@ db = SQLAlchemy(app)
 
 from categories import Categories
 from players import Players
-from matches import Matches
 
 @app.route("/")
 def hello_world():
     return "<p>Hello, World!</p>"
-
-@app.route("/match", methods = ["GET"])
-def get_all_matches():
-    matches = Matches.query.all()
-    return jsonify([e.serialize() for e in matches])
-
-@app.route("/match/<id>")
-def get_matches(id):
-    match = Matches.query.filter_by(id=id).first()
-    return jsonify(match.serialize())
-
-# @app.route("match", methods = ["POST"])
-# def post_match():
-#     id = request.form.get("id")
-#     first_name = request.form.get("first_name")
-#     last_name = request.form.get("last_name")
-#     elegible_year = request.form.get("elegible_year")
-#     sex = request.form.get("sex")
-
-#     matches=Matches(name=name)
-#     db.session.add(category)
-#     db.session.commit()
-#     print("success!")
-    
-#     return "Inserted {name} into categories".format(name=name), 200
-
 
 @app.route("/players", methods = ["GET"])
 def getplayers():
@@ -52,17 +25,38 @@ def getplayers():
 
 @app.route("/player", methods = ["POST"])
 def newPlayer():
-    id = request.form.get("id")
     first_name = request.form.get("first_name")
     last_name = request.form.get("last_name")
     elegible_year = request.form.get("elegible_year")
     sex = request.form.get("sex")
     try: 
-        return(Players.createPlayer(id, first_name, last_name, elegible_year, sex))
+        (Players.createPlayer(first_name, last_name, elegible_year, sex))
+        return 'Player ' + first_name + last_name + "was added.", 200
+    
     except Exception as e:
-        return str(e)
+        return str(e), 500
 
+@app.route("/player/<id>", methods = ["DELETE", "GET", "PUT"])
+def playerHandler(id):
+    player = Players.findById(id)
+    if (player is None):
+        return 'No player found', 100
+    elif (request.method == 'GET'):
+        return player, 200
+    elif (request.method == 'PUT'):
+        first_name = request.form.get("first_name")
+        last_name = request.form.get("last_name")
+        elegible_year = request.form.get("elegible_year")
+        sex = request.form.get("sex")
+        try:
+            return Players.update(id, first_name, last_name, elegible_year, sex)
+        except Exception as e:
+            return str(e), 500
+    else:
+        Players.delete(id)
+        return "success", 200
 
+              
 @app.route("/category", methods = ["POST"])
 def newCategory():
     name = request.form.get("name")
@@ -74,7 +68,9 @@ def newCategory():
     name=os.getenv('DATABASE_NAME')))
     
     try:
-        category=Categories(name=name)
+        category=Categories(
+            name=name
+        )
         db.session.add(category)
         db.session.commit()
         print("success!")
