@@ -2,6 +2,7 @@ from app import app, db
 from app.categories import Categories
 from app.players import Players
 from app.matches import Matches
+from app.playerStats import playerStats
 from flask import request, jsonify, render_template
 from flask_cors import cross_origin
 import os, json
@@ -173,6 +174,19 @@ def addMatch():
     
     except Exception as e:
         return str(e), 500
+
+################################################################################
+#player stats
+################################################################################
+
+@cross_origin()
+@app.route("/api/playerstats/<id>", methods = ["GET"])
+def getWins(id):
+    try:
+        to_return = playerStats.getTotalWins(id)
+        return to_return, 200
+    except Exception as e:
+            return str(e), 500
 
 
 if __name__ == '__main__':
